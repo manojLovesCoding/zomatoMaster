@@ -1,16 +1,17 @@
-import express from "ecpress";
-import { UserModel } from "../../database/user";
-import bcrypt from "bcrypt";
+import express from "express";
+import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-
 const Router = express.Router();
+
+//Models
+import { UserModel } from "../../database/user";
 
 /*
 Route   /signup
-Descrip Signp with email and password 
+Descrip /Signup with email and password
 Params  None
-Access  Public
-Method  Post*/
+Action  Public
+Method  Post */
 
 Router.post("/signup", async (req, res) => {
     try {
@@ -24,23 +25,21 @@ Router.post("/signup", async (req, res) => {
             return res.json({ error: "User already Exists" });
         }
 
-        //hashing and salting
+        //hashing
         const bcryptSalt = await bcrypt.genSalt(8);
         const hashedPassword = await bcrypt.hash(password, bcryptSalt);
 
-        //DB
         await UserModel.create({
             ...req.body.credentials,
             password: hashedPassword
         });
 
-
         //JWT Auth Token
-        const token = jwt.sign({ user: { fullname, email } }, "ZomatoMaster");
+        const token = jwt.sign({ user: { fullname, email } }, "ZomatoApp");
         return res.status(200).json({ token });
 
     } catch (error) {
-        return res.status(500).json({ error: error.message })
+        return res.status(500).json({ error: error.message });
     }
 });
 
