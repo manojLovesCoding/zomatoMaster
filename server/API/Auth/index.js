@@ -26,17 +26,22 @@ Router.post("/signup", async (req, res) => {
 
         //hashing and salting
         const bcryptSalt = await bcrypt.genSalt(8);
-        const hasedPassword = await bcrypt.hash(password, bcryptSalt);
+        const hashedPassword = await bcrypt.hash(password, bcryptSalt);
 
+        //DB
+        await UserModel.create({
+            ...req.body.credentials,
+            password: hashedPassword
+        });
 
 
         //JWT Auth Token
-        const token = await jwt.sign({ user: { fullname, email } }, "ZomatoApp");
-        return res.status(200).json((token));
+        const token = jwt.sign({ user: { fullname, email } }, "ZomatoMaster");
+        return res.status(200).json({ token });
 
     } catch (error) {
         return res.status(500).json({ error: error.message })
     }
-})
+});
 
 export default Router;
