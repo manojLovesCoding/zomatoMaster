@@ -3,6 +3,7 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 const Router = express.Router();
 
+
 //Models
 import { UserModel } from "../../database/user";
 
@@ -35,7 +36,7 @@ Router.post("/signup", async (req, res) => {
         });
 
         //JWT Auth Token
-        const token = jwt.sign({ user: { fullname, email } }, "ZomatoApp");
+        const token = jwt.sign({ user: { fullname, email } }, "zomatatDatabases");
         return res.status(200).json({ token });
 
     } catch (error) {
